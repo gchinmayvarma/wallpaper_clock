@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node gen-icons.js)",
+      "Bash(python -c \"from PIL import Image, ImageDraw, ImageFont; print\\(''PIL available''\\)\")",
+      "Bash(python3 -c \"from PIL import Image; print\\(''PIL available''\\)\")",
+      "Bash(python -c \":*)"
+    ]
+  }
+}
