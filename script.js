@@ -28,6 +28,16 @@ document.getElementById('font-btn').addEventListener('click', () => {
 
 applyFont();
 
+let clockOpacity = parseInt(localStorage.getItem('clockOpacity') || '100');
+const opacitySlider = document.getElementById('opacity-slider');
+opacitySlider.value = clockOpacity;
+document.getElementById('clock').style.opacity = clockOpacity / 100;
+opacitySlider.addEventListener('input', () => {
+    clockOpacity = parseInt(opacitySlider.value);
+    localStorage.setItem('clockOpacity', clockOpacity);
+    document.getElementById('clock').style.opacity = clockOpacity / 100;
+});
+
 let clockScale = parseFloat(localStorage.getItem('clockScale') || '1');
 
 function applyScale() {

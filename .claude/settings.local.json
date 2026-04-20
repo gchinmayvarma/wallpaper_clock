@@ -4,7 +4,10 @@
       "Bash(node gen-icons.js)",
       "Bash(python -c \"from PIL import Image, ImageDraw, ImageFont; print\\(''PIL available''\\)\")",
       "Bash(python3 -c \"from PIL import Image; print\\(''PIL available''\\)\")",
-      "Bash(python -c \":*)"
+      "Bash(python -c \":*)",
+      "Bash(python3 \"B:/codecode/wallpaper_clock/fonts/fix_css.py\")",
+      "Bash(python \"B:/codecode/wallpaper_clock/fonts/fix_css.py\")",
+      "Bash(python \"fonts/fix_css.py\")"
     ]
   }
 }
