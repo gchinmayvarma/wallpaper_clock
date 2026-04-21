@@ -1,4 +1,4 @@
-const CACHE = 'chillax-v4';
+const CACHE = 'chillax-v5';
 const ASSETS = [
   '/',
   '/index.html',

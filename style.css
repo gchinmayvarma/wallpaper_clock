@@ -13,6 +13,8 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    -webkit-app-region: drag;
+    app-region: drag;
 }
 
 #clock {
@@ -55,7 +57,39 @@ body {
     align-self: baseline;
 }
 
+#timezone {
+    position: absolute;
+    top: 0;
+    right: 0;
+    text-align: right;
+    font-size: 0.2em;
+    line-height: 1.25;
+    letter-spacing: 0.06em;
+    opacity: 0.55;
+    cursor: pointer;
+    white-space: nowrap;
+    -webkit-app-region: no-drag;
+    app-region: no-drag;
+    font-family: inherit;
+}
+
+#timezone:hover {
+    opacity: 1;
+}
+
+#timezone .tz-city {
+    display: block;
+    font-size: 0.85em;
+    text-transform: uppercase;
+}
+
+#timezone .tz-time {
+    display: block;
+}
+
 #controls {
+    -webkit-app-region: no-drag;
+    app-region: no-drag;
     position: fixed;
     bottom: 20px;
     right: 20px;

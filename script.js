@@ -12,6 +12,14 @@ const FONTS = [
     "'Cormorant Garamond', serif",
     "'Playfair Display', serif",
     "'DM Serif Display', serif",
+    "'Space Mono', monospace",
+    "'Audiowide', sans-serif",
+    "'Oxanium', sans-serif",
+    "'Electrolize', sans-serif",
+    "'Iceland', sans-serif",
+    "'Michroma', sans-serif",
+    "'Exo 2', sans-serif",
+    "'Nova Mono', monospace",
 ];
 
 let fontIndex = parseInt(localStorage.getItem('fontIndex') || '0');
@@ -52,6 +60,51 @@ window.addEventListener('wheel', (e) => {
 }, { passive: false });
 
 applyScale();
+
+const TIMEZONES = [
+    null,
+    { city: 'New York',    tz: 'America/New_York' },
+    { city: 'Los Angeles', tz: 'America/Los_Angeles' },
+    { city: 'Chicago',     tz: 'America/Chicago' },
+    { city: 'Toronto',     tz: 'America/Toronto' },
+    { city: 'São Paulo',   tz: 'America/Sao_Paulo' },
+    { city: 'London',      tz: 'Europe/London' },
+    { city: 'Paris',       tz: 'Europe/Paris' },
+    { city: 'Berlin',      tz: 'Europe/Berlin' },
+    { city: 'Moscow',      tz: 'Europe/Moscow' },
+    { city: 'Dubai',       tz: 'Asia/Dubai' },
+    { city: 'Mumbai',      tz: 'Asia/Kolkata' },
+    { city: 'Bangkok',     tz: 'Asia/Bangkok' },
+    { city: 'Singapore',   tz: 'Asia/Singapore' },
+    { city: 'Hong Kong',   tz: 'Asia/Hong_Kong' },
+    { city: 'Seoul',       tz: 'Asia/Seoul' },
+    { city: 'Tokyo',       tz: 'Asia/Tokyo' },
+    { city: 'Sydney',      tz: 'Australia/Sydney' },
+];
+
+let tzIndex = parseInt(localStorage.getItem('tzIndex') || '0');
+
+function updateTimezone() {
+    const el = document.getElementById('timezone');
+    const entry = TIMEZONES[tzIndex];
+    if (!entry) { el.innerHTML = ''; return; }
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('en-US', {
+        timeZone: entry.tz,
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+    });
+    el.innerHTML = `<span class="tz-city">${entry.city}</span><span class="tz-time">${timeStr}</span>`;
+}
+
+document.getElementById('timezone').addEventListener('click', () => {
+    tzIndex = (tzIndex + 1) % TIMEZONES.length;
+    localStorage.setItem('tzIndex', tzIndex);
+    updateTimezone();
+});
+
+updateTimezone();
 setInterval(showTime, 1000);
 function showTime() {
     let time = new Date();
@@ -74,4 +127,5 @@ function showTime() {
     document.getElementById("time_m").innerHTML = m;
     document.getElementById("time_s").innerHTML = s;
     document.getElementById("am_pm").innerHTML = am_pm;
+    updateTimezone();
 }
