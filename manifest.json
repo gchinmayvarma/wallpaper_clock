@@ -2,7 +2,7 @@
   "name": "Chillax Clock",
   "short_name": "Chillax",
   "description": "A minimal fullscreen wallpaper clock",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "display_override": ["window-controls-overlay"],
   "background_color": "#000000",

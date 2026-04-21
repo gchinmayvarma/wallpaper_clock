@@ -59,12 +59,11 @@ body {
 
 #timezone {
     position: absolute;
-    top: 0;
-    right: 0;
-    text-align: right;
+    top: 1em;
+    left: calc(100% - 10px);
     font-size: 0.2em;
-    line-height: 1.25;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     opacity: 0.55;
     cursor: pointer;
     white-space: nowrap;
@@ -77,14 +76,40 @@ body {
     opacity: 1;
 }
 
-#timezone .tz-city {
-    display: block;
-    font-size: 0.85em;
-    text-transform: uppercase;
+
+#day-progress {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 0.04em;
+    margin-top: 0.09em;
+    background: rgba(255, 255, 255, 0.1);
 }
 
-#timezone .tz-time {
-    display: block;
+#day-progress-fill {
+    height: 100%;
+    background: rgba(255, 255, 255, 0.6);
+    transition: width 0.3s linear;
+}
+
+.dp-tick {
+    position: absolute;
+    top: -0.023em;
+    width: 1px;
+    height: 0.085em;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.dp-25 { left: 25%; }
+.dp-75 { left: 75%; }
+
+.dp-50 {
+    left: 50%;
+    top: -0.038em;
+    height: 0.115em;
+    width: 2px;
+    background: rgba(255, 255, 255, 0.7);
 }
 
 #controls {

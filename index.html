@@ -25,11 +25,17 @@
         <span id="time_m"></span>
         <span id="time_s"></span>
         <span id="timezone"></span>
+        <div id="day-progress">
+            <div id="day-progress-fill"></div>
+            <span class="dp-tick dp-25"></span>
+            <span class="dp-tick dp-50"></span>
+            <span class="dp-tick dp-75"></span>
+        </div>
     </div>
     <script src="script.js"></script>
     <script>
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js');
+        navigator.serviceWorker.register('sw.js');
       }
     </script>
 </body>

@@ -52,34 +52,23 @@ function applyScale() {
     document.documentElement.style.setProperty('--clock-scale', clockScale);
 }
 
+let scaleSaveTimer = null;
 window.addEventListener('wheel', (e) => {
     e.preventDefault();
-    clockScale = Math.min(4, Math.max(0.2, clockScale - e.deltaY * 0.001));
-    localStorage.setItem('clockScale', clockScale);
+    clockScale = Math.min(4, Math.max(0.2, clockScale - e.deltaY * 0.005));
     applyScale();
+    clearTimeout(scaleSaveTimer);
+    scaleSaveTimer = setTimeout(() => localStorage.setItem('clockScale', clockScale), 300);
 }, { passive: false });
 
 applyScale();
 
 const TIMEZONES = [
-    null,
-    { city: 'New York',    tz: 'America/New_York' },
-    { city: 'Los Angeles', tz: 'America/Los_Angeles' },
-    { city: 'Chicago',     tz: 'America/Chicago' },
-    { city: 'Toronto',     tz: 'America/Toronto' },
-    { city: 'São Paulo',   tz: 'America/Sao_Paulo' },
-    { city: 'London',      tz: 'Europe/London' },
-    { city: 'Paris',       tz: 'Europe/Paris' },
-    { city: 'Berlin',      tz: 'Europe/Berlin' },
-    { city: 'Moscow',      tz: 'Europe/Moscow' },
-    { city: 'Dubai',       tz: 'Asia/Dubai' },
-    { city: 'Mumbai',      tz: 'Asia/Kolkata' },
-    { city: 'Bangkok',     tz: 'Asia/Bangkok' },
-    { city: 'Singapore',   tz: 'Asia/Singapore' },
-    { city: 'Hong Kong',   tz: 'Asia/Hong_Kong' },
-    { city: 'Seoul',       tz: 'Asia/Seoul' },
-    { city: 'Tokyo',       tz: 'Asia/Tokyo' },
-    { city: 'Sydney',      tz: 'Australia/Sydney' },
+    { city: 'India',         tz: 'Asia/Kolkata' },
+    { city: 'Boston',        tz: 'America/New_York' },
+    { city: 'San Francisco', tz: 'America/Los_Angeles' },
+    { city: 'Sydney',        tz: 'Australia/Sydney' },
+    { city: 'London',        tz: 'Europe/London' },
 ];
 
 let tzIndex = parseInt(localStorage.getItem('tzIndex') || '0');
@@ -87,45 +76,30 @@ let tzIndex = parseInt(localStorage.getItem('tzIndex') || '0');
 function updateTimezone() {
     const el = document.getElementById('timezone');
     const entry = TIMEZONES[tzIndex];
-    if (!entry) { el.innerHTML = ''; return; }
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString('en-US', {
-        timeZone: entry.tz,
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true,
-    });
-    el.innerHTML = `<span class="tz-city">${entry.city}</span><span class="tz-time">${timeStr}</span>`;
+    el.textContent = entry.city;
 }
 
 document.getElementById('timezone').addEventListener('click', () => {
     tzIndex = (tzIndex + 1) % TIMEZONES.length;
     localStorage.setItem('tzIndex', tzIndex);
-    updateTimezone();
+    showTime();
 });
 
-updateTimezone();
+showTime();
 setInterval(showTime, 1000);
 function showTime() {
-    let time = new Date();
-    let h = time.getHours();
-    let m = time.getMinutes();
-    let s = time.getSeconds();
-    am_pm = "AM";
-    if (h > 12) {
-        h -= 12;
-        am_pm = "PM";
-    }
-    if (h == 0) {
-        h = 12;
-        am_pm = "AM";
-    }
-    h = h < 10 ? "0" + h : h;
-    m = m < 10 ? "0" + m : m;
-    s = s < 10 ? "0" + s : s;
-    document.getElementById("time_h").innerHTML = h;
-    document.getElementById("time_m").innerHTML = m;
-    document.getElementById("time_s").innerHTML = s;
-    document.getElementById("am_pm").innerHTML = am_pm;
+    const entry = TIMEZONES[tzIndex];
+    const opts = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+    if (entry) opts.timeZone = entry.tz;
+    const parts = new Intl.DateTimeFormat('en-US', opts).formatToParts(new Date());
+    const get = type => parts.find(p => p.type === type)?.value || '';
+    document.getElementById("time_h").innerHTML = get('hour');
+    document.getElementById("time_m").innerHTML = get('minute');
+    document.getElementById("time_s").innerHTML = get('second');
+    document.getElementById("am_pm").innerHTML = get('dayPeriod');
     updateTimezone();
+
+    const h = parseInt(get('hour')) % 12 + (get('dayPeriod') === 'PM' ? 12 : 0);
+    const totalSeconds = h * 3600 + parseInt(get('minute')) * 60 + parseInt(get('second'));
+    document.getElementById("day-progress-fill").style.width = (totalSeconds / 86400 * 100) + '%';
 }
