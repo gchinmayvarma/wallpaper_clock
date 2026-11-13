@@ -19,33 +19,79 @@ body {
     app-region: drag;
 }
 
-#clock {
-    font-family: 'Inconsolata', monospace;
+/* Drag regions swallow wheel events, so the single clock opts out to stay zoomable. */
+#clock,
+#clock .timezone {
+    -webkit-app-region: no-drag;
+    app-region: no-drag;
+}
+
+.clock {
+    font-family: var(--clock-font, 'Inconsolata', monospace);
+    opacity: var(--clock-opacity, 1);
     display: flex;
     text-align: center;
     align-items: baseline;
-    font-size: calc(var(--clock-scale, 1) * 9vw);
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    position: relative;
+}
+
+#clock {
+    font-size: calc(var(--clock-scale, 1) * 9vw);
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-
-
 }
 
-#time_m {
+#grid {
+    display: none;
+    position: fixed;
+    top: calc(env(titlebar-area-height, 0px) + 48px);
+    left: 48px;
+    right: 48px;
+    bottom: 48px;
+    flex-direction: column;
+}
+
+body.grid-on #grid {
+    display: flex;
+}
+
+body.grid-on #clock {
+    display: none;
+}
+
+.grid-row {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.grid-cell {
+    width: calc(100% / var(--grid-cols, 1));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#grid .clock {
+    font-size: var(--grid-font, 100px);
+    flex-shrink: 0;
+}
+
+.time_m {
     font-stretch: 200%;
 
 }
 
-#time_s {
+.time_s {
     font-size: 25%;
 }
 
-#am_pm {
+.am_pm {
     font-size: 20%;
 }
 
@@ -59,27 +105,34 @@ body {
     align-self: baseline;
 }
 
-#timezone {
+.timezone {
     position: absolute;
-    top: 1em;
-    left: calc(100% - 10px);
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    /* padding rather than margin, so the no-drag area runs unbroken from the bar */
+    padding-top: 0.3em;
     font-size: 0.2em;
+    line-height: 1;
     letter-spacing: 0.1em;
+    /* balances the trailing letter-spacing so the text is visually centered */
+    padding-left: 0.1em;
     text-transform: uppercase;
     opacity: 0.55;
-    cursor: pointer;
     white-space: nowrap;
-    -webkit-app-region: no-drag;
-    app-region: no-drag;
     font-family: inherit;
 }
 
-#timezone:hover {
+#clock .timezone {
+    cursor: pointer;
+}
+
+#clock .timezone:hover {
     opacity: 1;
 }
 
 
-#day-progress {
+.day-progress {
     position: absolute;
     top: 100%;
     left: 0;
@@ -89,7 +142,7 @@ body {
     background: rgba(255, 255, 255, 0.1);
 }
 
-#day-progress-fill {
+.day-progress-fill {
     height: 100%;
     background: rgba(255, 255, 255, 0.6);
     transition: width 0.3s linear;
@@ -114,12 +167,12 @@ body {
     background: rgba(255, 255, 255, 0.7);
 }
 
-#controls {
+#controls,
+#left-controls {
     -webkit-app-region: no-drag;
     app-region: no-drag;
     position: fixed;
     bottom: 20px;
-    right: 20px;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -140,6 +193,96 @@ body {
 
 #font-btn:hover {
     background: rgba(255, 255, 255, 0.5);
+}
+
+#controls {
+    right: 20px;
+}
+
+#left-controls {
+    left: 20px;
+}
+
+.icon-btn {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.25);
+    cursor: pointer;
+    outline: none;
+    transition: color 0.2s;
+    flex-shrink: 0;
+}
+
+.icon-btn svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+}
+
+.icon-btn:hover,
+body.grid-on #grid-btn,
+body.menu-open #city-btn {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+#city-btn {
+    display: none;
+}
+
+body.grid-on #city-btn {
+    display: block;
+}
+
+/* Padding, not margin, keeps the menu touching the buttons so it stays open on the way up. */
+#city-menu {
+    display: none;
+    position: absolute;
+    left: 0;
+    bottom: 100%;
+    padding-bottom: 12px;
+}
+
+body.menu-open #city-menu {
+    display: block;
+}
+
+#city-list {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(var(--menu-rows, 10), auto);
+    column-gap: 28px;
+    padding: 14px 18px;
+    background: #0a0a0a;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+}
+
+.city-option {
+    padding: 4px 0;
+    background: none;
+    border: none;
+    outline: none;
+    font-family: var(--clock-font, 'Inconsolata', monospace);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: left;
+    white-space: nowrap;
+    color: rgba(255, 255, 255, 0.35);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.city-option:hover {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.city-option.on {
+    color: rgba(255, 255, 255, 0.9);
 }
 
 #opacity-slider {
